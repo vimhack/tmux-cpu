@@ -4,7 +4,6 @@ Enables displaying CPU and GPU information in Tmux `status-right` and `status-le
 Configurable percentage and icon display.
 
 ## Installation
-
 ### Installation with [Tmux Plugin Manager](https://github.com/tmux-plugins/tpm) (recommended)
 
 Add plugin to the list of TPM plugins in `.tmux.conf`:
@@ -43,14 +42,13 @@ If format strings are added to `status-right`, they should now be visible.
 ### Optional requirements (Linux, BSD, OSX)
 
 - `iostat` or `sar` are the best way to get an accurate CPU percentage.
-  A fallback is included using `ps -aux` but could be inaccurate.
+A fallback is included using `ps -aux` but could be inaccurate.
 - `free` is used for obtaining system RAM status.
 - `lm-sensors` is used for CPU temperature.
 - `nvidia-smi` is required for GPU information.
-  For OSX, `cuda-smi` is required instead (but only shows GPU memory use rather than load).
-  If "No GPU" is displayed, it means the script was not able to find `nvidia-smi`/`cuda-smi`.
-  Please make sure the appropriate command is installed and in the `$PATH`.
-- `istats` is used for cpu temperature in OSX.
+For OSX, `cuda-smi` is required instead (but only shows GPU memory use rather than load).
+If "No GPU" is displayed, it means the script was not able to find `nvidia-smi`/`cuda-smi`.
+Please make sure the appropriate command is installed and in the `$PATH`.
 
 ## Usage
 
@@ -79,7 +77,6 @@ This is done by introducing 12 new format strings that can be added to
 - `#{cpu_temp}` - will show CPU temperature (averaged across cores)
 - `#{cpu_temp_bg_color}` - will change the background color based on the CPU temperature
 - `#{cpu_temp_fg_color}` - will change the foreground color based on the CPU temperature
-- `#{fan_speed}` - will display a fan speed
 
 GPU equivalents also exist:
 
