@@ -20,6 +20,23 @@ print_cpu_temp() {
 }
 
 main() {
-    print_cpu_temp
+    local update_interval=$(get_tmux_option $cpu_update_interval_option $cpu_update_interval_default)
+    local current_time=$(date "+%s")
+    local previous_update=$(get_tmux_option "@cputemp_previous_update_time")
+    local delta=$((current_time - previous_update))
+
+    if [[ -z "$previous_update" ]] || [[ $delta -ge $update_interval ]]; then
+        local value=$(
+            print_cpu_temp
+        )
+
+        if [ "$?" -eq 0 ]; then
+            set_tmux_option "@cputemp_previous_update_time" "$current_time"
+            set_tmux_option "@cputemp_previous_value" "$value"
+        fi
+    fi
+
+    echo -n "$(get_tmux_option "@cputemp_previous_value")"
 }
+
 main

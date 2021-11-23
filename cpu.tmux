@@ -59,12 +59,6 @@ cpu_commands=(
     "#($CURRENT_DIR/scripts/fan_speed.sh)"
 )
 
-set_tmux_option() {
-    local option=$1
-    local value=$2
-    tmux set-option -gq "$option" "$value"
-}
-
 do_interpolation() {
     local all_interpolated="$1"
     for ((i = 0; i < ${#cpu_commands[@]}; i++)); do

@@ -1,6 +1,6 @@
 #!/usr/bin/env bash
 
-CURRENT_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
+CURRENT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 
 source "$CURRENT_DIR/helpers.sh"
 
@@ -13,25 +13,42 @@ cpu_medium_default_fg_color="#[fg=yellow]"
 cpu_high_default_fg_color="#[fg=red]"
 
 get_fg_color_settings() {
-  cpu_low_fg_color=$(get_tmux_option "@cpu_low_fg_color" "$cpu_low_default_fg_color")
-  cpu_medium_fg_color=$(get_tmux_option "@cpu_medium_fg_color" "$cpu_medium_default_fg_color")
-  cpu_high_fg_color=$(get_tmux_option "@cpu_high_fg_color" "$cpu_high_default_fg_color")
+    cpu_low_fg_color=$(get_tmux_option "@cpu_low_fg_color" "$cpu_low_default_fg_color")
+    cpu_medium_fg_color=$(get_tmux_option "@cpu_medium_fg_color" "$cpu_medium_default_fg_color")
+    cpu_high_fg_color=$(get_tmux_option "@cpu_high_fg_color" "$cpu_high_default_fg_color")
 }
 
 print_fg_color() {
-  local cpu_percentage=$($CURRENT_DIR/cpu_percentage.sh | sed -e 's/%//')
-  local load_status=$(load_status $cpu_percentage)
-  if [ $load_status == "low" ]; then
-    echo "$cpu_low_fg_color"
-  elif [ $load_status == "medium" ]; then
-    echo "$cpu_medium_fg_color"
-  elif [ $load_status == "high" ]; then
-    echo "$cpu_high_fg_color"
-  fi
+    local cpu_percentage=$($CURRENT_DIR/cpu_percentage.sh | sed -e 's/%//')
+    local load_status=$(load_status $cpu_percentage)
+    if [ $load_status == "low" ]; then
+        echo "$cpu_low_fg_color"
+    elif [ $load_status == "medium" ]; then
+        echo "$cpu_medium_fg_color"
+    elif [ $load_status == "high" ]; then
+        echo "$cpu_high_fg_color"
+    fi
 }
 
 main() {
-  get_fg_color_settings
-  print_fg_color
+    local update_interval=$(get_tmux_option $cpu_update_interval_option $cpu_update_interval_default)
+    local current_time=$(date "+%s")
+    local previous_update=$(get_tmux_option "@cpufgcolor_previous_update_time")
+    local delta=$((current_time - previous_update))
+
+    if [[ -z "$previous_update" ]] || [[ $delta -ge $update_interval ]]; then
+        local value=$(
+            get_fg_color_settings
+            print_fg_color
+        )
+
+        if [ "$?" -eq 0 ]; then
+            set_tmux_option "@cpufgcolor_previous_update_time" "$current_time"
+            set_tmux_option "@cpufgcolor_previous_value" "$value"
+        fi
+    fi
+
+    echo -n "$(get_tmux_option "@cpufgcolor_previous_value")"
 }
+
 main

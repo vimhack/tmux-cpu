@@ -118,6 +118,8 @@ CPU usage higher than 80%:<br/>
 Here are all available options with their default values:
 
 ```shell
+@cpu_update_interval = 3 # update cpu status every specified seconds
+
 @cpu_low_icon "=" # icon when cpu is low
 @cpu_medium_icon "≡" # icon when cpu is medium
 @cpu_high_icon "≣" # icon when cpu is high
